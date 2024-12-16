@@ -1,0 +1,6 @@
+{
+    "type": "h5",
+    "typescript": false,
+    "base": "./",
+    "outDir": "./"
+}

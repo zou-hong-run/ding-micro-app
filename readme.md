@@ -1,6 +1,15 @@
 # 钉钉应用开发教程
 
-官网文档地址[应用类型介绍 - 钉钉开放平台](https://open.dingtalk.com/document/orgapp/application-types)
+## 地址
+
+- 视频教程地址
+  - [钉钉应用开发教程（持续更新）_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV13BqkYBEhS/?spm_id_from=333.999.0.0)
+- 代码仓库
+  - [zou-hong-run/ding-micro-app: 钉钉应用开发教程代码](https://github.com/zou-hong-run/ding-micro-app)
+
+- [应用类型介绍 - 钉钉开放平台](https://open.dingtalk.com/document/orgapp/application-types)
+- [钉钉应用开发平台](https://open-dev.dingtalk.com/fe/ai?hash=%23%2Fapp%2F6767323a-e4b9-4979-afc6-b985e18f8190%2Fh5#/app/6767323a-e4b9-4979-afc6-b985e18f8190/h5)
+- [钉钉管理后台](https://oa.dingtalk.com/index.htm#/welcome)
 
 ## 为啥要学习钉钉开发
 
@@ -52,7 +61,7 @@
 
 [钉钉开放平台](https://open.dingtalk.com/document/ability/map)
 
-## 开发工具
+## 开发工具下载
 
 ### 后端API调试工具
 
@@ -79,6 +88,9 @@
   - 发布
 - 本地调试
   - 使用DinTalkDesignCli本地预览调试
+- 初始化项目内容
+  - 架构前端代码
+  - 架构后端代码
 
 ### 前端API调试工具
 

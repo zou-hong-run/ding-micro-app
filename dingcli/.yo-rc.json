@@ -1,0 +1,8 @@
+{
+  "generator-dd-application": {
+    "promptValues": {
+      "template": "h5_jsapi_component_demo_vue",
+      "language": "javascript"
+    }
+  }
+}
