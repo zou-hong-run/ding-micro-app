@@ -31,3 +31,6 @@ coverage
 *.tsbuildinfo
 
 .env.development
+
+*/*/ding.config.json
+*/*/spark.json

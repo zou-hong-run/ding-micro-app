@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <div>404</div>
+  <div>warning</div>
 </template>
 
 <style scoped></style>

@@ -7,12 +7,18 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: "主页"
+      }
     },
     {
       path: '/warning',
       name: "warning",
-      component: NotFoundComponent
+      component: NotFoundComponent,
+      meta: {
+        title: "警告"
+      }
     },
     { path: '/404', name: "404", component: NotFoundComponent },
     { path: '/405', name: "405", component: NotFoundComponent },

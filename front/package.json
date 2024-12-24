@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
+    "dingtalk-jsapi": "^3.0.42",
     "js-cookie": "^3.0.5",
     "pinia": "^2.2.6",
     "vant": "^4.9.10",
