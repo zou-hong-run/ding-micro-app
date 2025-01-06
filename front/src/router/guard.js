@@ -34,7 +34,7 @@ router.beforeEach(async (to, from) => {
         nonceStr, // 必填，自定义固定字符串。
         signature, // 必填，签名
         type: 0, //选填。0表示微应用的jsapi,1表示服务窗的jsapi；不填默认为0。该参数从dingtalk.js的0.8.3版本开始支持
-        jsApiList: ['chooseChat', 'chooseImage', 'share'] // 必填，需要使用的jsapi列表，注意：不要带dd。
+        jsApiList: ['chooseChat', 'biz.chat.chooseConversationByCorpId', 'share', 'chooseChat', 'chooseImage', 'biz.util.chooseImage', 'share'] // 必填，需要使用的jsapi列表，注意：不要带dd。
       });
       dingtalk.error(async (err) => {
         console.log(err, 'err')
