@@ -88,6 +88,7 @@
   - 发布
 - 本地调试
   - 使用DinTalkDesignCli本地预览调试
+  - ding dev web --targetH5Url {你本地调试的页面链接}
 - 初始化项目内容
   - 架构前端代码
   - 架构后端代码

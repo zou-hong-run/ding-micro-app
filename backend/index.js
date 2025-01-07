@@ -5,8 +5,9 @@ import dingdingRouter from './router/dingding.js'
 // import famous_words from './datas/famous_words.json'
 // import famous_words from './datas/famous_words.json' assert {type: "json"}
 import famous_words from "./datas/famous_words.json" with { type: "json" };
+import { initStream } from './stream/stream.js';
 const port = 3000;
-
+initStream()
 const app = express();
 app.use(cors())
 app.use(express.json())

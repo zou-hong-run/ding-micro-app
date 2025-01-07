@@ -4,6 +4,47 @@ import { useUserStore } from '@/stores/user';
 import { jsSdkAuthorized } from '@/api/index'
 import { getToken } from '@/utils/auth';
 let whiteList = ["/warning", "/404", "/405"];
+const initEventListener = () => {
+  // 退到后台的事件监听(webview)
+  document.addEventListener('pause', function (e) {
+    e.preventDefault();
+    console.log('事件：pause')
+  }, false);
+
+  // 页面被唤醒的事件监听(webview)
+  document.addEventListener('resume', function (e) {
+    e.preventDefault();
+    console.log('事件：resume')
+  }, false);
+
+
+  //返回按钮点击的事件监听(android)
+  document.addEventListener('backbutton', function (e) {
+    e.preventDefault();
+    dingtalk.device.notification.alert({
+      message: '哎呀，你不小心点到返回键啦!',
+      title: '...警告...'
+    });
+  }, false);
+
+  //双击标题的事件监听
+  document.addEventListener('navTitle', function (e) {
+    e.preventDefault();
+    console.log('事件：navTitle')
+  }, false);
+
+  // 网络连接成功的事件监听
+  document.addEventListener('online', function (e) {
+    e.preventDefault();
+    console.log('事件：online')
+  }, false);
+
+  // 网络连接断开的事件监听
+  document.addEventListener('offline', function (e) {
+    e.preventDefault();
+    console.log('事件：offline')
+  }, false);
+}
 router.beforeEach(async (to, from) => {
   const userStore = useUserStore();
   showLoadingToast({
@@ -46,6 +87,7 @@ router.beforeEach(async (to, from) => {
         });
       }); //该方法必须带上，用来捕获鉴权出现的异常信息，否则不方便排查出现的问题
       dingtalk.ready(async () => {
+        initEventListener()
         // 表示jssdk授权成功，我们可以调用钉钉提供内置方法了。。
         console.log("表示jssdk授权成功，我们可以调用钉钉提供内置方法了。。");
         try {
