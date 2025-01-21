@@ -1,7 +1,8 @@
-import { DWClient } from 'dingtalk-stream-sdk-nodejs'
+import { DWClient, EventAck } from 'dingtalk-stream-sdk-nodejs'
 import config from '../datas/ding.config.json' with {type: 'json'}
-
-
+import https from 'https'
+import { getToken } from '../utils/getToken.js'
+import axios from 'axios'
 export const initStream = () => {
   console.log("初始化stream");
   const client = new DWClient({
@@ -11,7 +12,7 @@ export const initStream = () => {
   /**
    * @type {import('dingtalk-stream-sdk-nodejs').DWClientDownStream}
    */
-  const onEventReceived = (event) => {
+  const onEventReceived = async (event) => {
     // console.log(event);
     /**
      * {
@@ -44,12 +45,31 @@ export const initStream = () => {
      */
     const now = new Date();
     console.log(`received event, delay=${now.getTime() - parseInt(event.headers?.eventBornTime || '0')}ms`)
-    if (event.headers?.eventType !== 'chat_update_title') {
+    if (event.headers?.eventType == 'chat_update_title') {
       // ignore events not equals `chat_update_title`; 忽略`chat_update_title`之外的其他事件；
       // 该示例仅演示 chat_update_title 类型的事件订阅；
       //  stream模式下，服务端推送消息到client后，会监听client响应，如果消息长时间未响应会在一定时间内(60s)重试推消息，可以通过此方法返回消息响应，避免多次接收服务端消息。
       // 机器人topic，可以通过socketCallBackResponse方法返回消息响应
-      client.send(res.headers.messageId, { status: EventAck.SUCCESS })
+
+      let openConversationId = "cid9fmNLu/etdr0T7FmkCT+iA=="
+      let robotCode = "dingi91dw0hmpvygakr8"
+      let token = await getToken();
+
+      let res = await axios({
+        headers: {
+          'Content-Type': 'application/json',
+          "x-acs-dingtalk-access-token": token
+        },
+        method: 'post',
+        url: `https://api.dingtalk.com/v1.0/robot/groupMessages/send`,
+        data: {
+          msgParam: JSON.stringify({ content: "你好呀" }),
+          msgKey: "sampleText",
+          openConversationId,
+          robotCode,
+        }
+      });
+      client.send(res.headers?.messageId, { status: EventAck.SUCCESS })
       return { status: EventAck.SUCCESS };
     }
     //
@@ -59,9 +79,37 @@ export const initStream = () => {
   }
   client.registerCallbackListener('/v1.0/im/bot/messages/get', async (res) => {
     // 注册机器人回调事件
-    console.log("收到消息");
+    console.log("收到消息", res);
     const { messageId } = res.headers;
     const { text, senderStaffId, sessionWebhook } = JSON.parse(res.data);
+    // 回复消息
+    const data = JSON.stringify({
+      'msgtype': 'text',
+      'text': {
+        'content': '我是一段文字+123456789',
+      },
+      'at': {
+        'atUserIds': [senderStaffId]
+      }
+    })
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    const req = https.request(sessionWebhook, options, (res) => {
+      console.log(`状态码: ${res.statusCode}`)
+      res.on('data', (d) => {
+        console.log('data:', d)
+      })
+    });
+    req.on('error', (error) => {
+      console.error(error);
+    })
+    req.write(data);
+    req.end();
+    return { status: EventAck.SUCCESS, message: 'OK' }; // message 属性可以是任意字符串；
   })
   client.registerAllEventListener(onEventReceived)
 
