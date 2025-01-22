@@ -373,7 +373,9 @@ dd.ready(function() {
 
 ## 机器人
 
-**Webhook 机器人**
+**Webhook 和http**
+
+接受消息,回复消息
 
 ## 卡片
 
