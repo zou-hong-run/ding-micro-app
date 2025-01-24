@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "dingtalk-stream-sdk-nodejs": "^2.0.4",
     "express": "^4.21.2",
     "sha1": "^1.1.1"

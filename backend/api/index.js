@@ -54,3 +54,108 @@ export const getDingUserInfo = async (access_token, code) => {
     }
   });
 }
+
+/**
+ * 创建审批流模板
+ * @param {*} token 
+ * @param {*} data 
+ * @returns 
+ */
+export const createProcessTemplate = async (token, data) => {
+  return request({
+    headers: {
+      'Content-Type': 'application/json',
+      'x-acs-dingtalk-access-token': token
+    },
+    method: 'post',
+    url: `${prefix1}/v1.0/workflow/processCentres/schemas`,
+    data
+  });
+}
+/**
+ * 查询审批流模板
+ * @param {*} token 
+ * @param {*} name 
+ * @returns 
+ */
+export const findProcessTemplate = async (token, name) => {
+  return request({
+    headers: {
+      'Content-Type': 'application/json',
+      'x-acs-dingtalk-access-token': token
+    },
+    method: 'get',
+    url: `${prefix1}/v1.0/workflow/processCentres/schemaNames/processCodes`,
+    params: {
+      name
+    }
+  });
+}
+/**
+ * 创建审批实例
+ * @param {*} token 
+ * @param {*} data 
+ * @returns 
+ */
+export const createProcessInstance = async (token, data) => {
+  return request({
+    headers: {
+      'Content-Type': 'application/json',
+      'x-acs-dingtalk-access-token': token
+    },
+    method: 'post',
+    url: `${prefix1}/v1.0/workflow/processCentres/instances`,
+    data
+  });
+}
+/**
+ * 更新审批实例状态
+ * @param {*} token 
+ * @param {*} data 
+ * @returns 
+ */
+export const updateProcessInstance = async (token, data) => {
+  return request({
+    headers: {
+      'Content-Type': 'application/json',
+      'x-acs-dingtalk-access-token': token
+    },
+    method: 'put',
+    url: `${prefix1}/v1.0/workflow/processCentres/instances`,
+    data
+  });
+}
+/**
+ * 创建待办任务
+ * @param {*} token 
+ * @param {*} data 
+ * @returns 
+ */
+export const createProcessTasks = async (token, data) => {
+  return request({
+    headers: {
+      'Content-Type': 'application/json',
+      'x-acs-dingtalk-access-token': token
+    },
+    method: 'post',
+    url: `${prefix1}/v1.0/workflow/processCentres/tasks`,
+    data
+  });
+}
+/**
+ * 更新待办任务
+ * @param {*} token 
+ * @param {*} data 
+ * @returns 
+ */
+export const updateProcessTasks = async (token, data) => {
+  return request({
+    headers: {
+      'Content-Type': 'application/json',
+      'x-acs-dingtalk-access-token': token
+    },
+    method: 'put',
+    url: `${prefix1}/v1.0/workflow/processCentres/tasks`,
+    data
+  });
+}

@@ -20,6 +20,14 @@ const router = createRouter({
         title: "警告"
       }
     },
+    {
+      path: '/approvalProcess',
+      name: 'approvalProcess',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/approvalProcess.vue')
+    },
     { path: '/404', name: "404", component: NotFoundComponent },
     { path: '/405', name: "405", component: NotFoundComponent },
     { path: '/:pathMatch(.*)', component: NotFoundComponent }

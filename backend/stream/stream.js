@@ -1,8 +1,13 @@
 import { DWClient, EventAck, TOPIC_CARD } from 'dingtalk-stream-sdk-nodejs'
 import config from '../datas/ding.config.json' with {type: 'json'}
-import https from 'https'
 import { getToken } from '../utils/getToken.js'
+
 import axios from 'axios'
+import { getConnect, getParams } from '../utils/spark.js';
+let chatHistoryMap = {};// 聊天历史 存储每一个用户的聊天历史
+let chatLenMap = {};// 每一个用户的聊天回复字段长度 
+
+
 const convertJSONValuesToString = (obj) => {
   const newObj = {};
   for (const key in obj) {
@@ -86,9 +91,7 @@ export const initStream = () => {
       client.send(res.headers?.messageId, { status: EventAck.SUCCESS })
       return { status: EventAck.SUCCESS };
     }
-    if (event)
-
-      return { status: EventAck.SUCCESS, message: 'OK' }; // message 属性可以是任意字符串；
+    return { status: EventAck.SUCCESS, message: 'OK' }; // message 属性可以是任意字符串；
 
   }
   client.registerCallbackListener('/v1.0/im/bot/messages/get', async (res) => {
@@ -187,7 +190,92 @@ export const initStream = () => {
         console.log(error.response.data, 'error.response.data')
       }
       client.send(messageId, { status: EventAck.SUCCESS })
+    } else {
+      const accessToken = await getToken();
+      try {
+        // const { messageId } = res.headers;
+        const { text, senderStaffId, sessionWebhook } = JSON.parse(
+          res.data
+        );
+        let content = (text?.content || "").trim();// 我们发送内容
+        console.log(content, 'content')
+        const body = {
+          at: {
+            // atUserIds: [senderStaffId],
+            isAtAll: false,
+          },
+          text: {
+            // content:
+            //   "（🥕）" + text?.content ||
+            //   "钉钉,让进步发生",
+          },
+          msgtype: "text",
+        };
+        // console.log("收到消息", content, senderStaffId, sessionWebhook);
+        if (!chatHistoryMap[senderStaffId]) {
+          chatHistoryMap[senderStaffId] = [];
+        }
+        if (!chatLenMap[senderStaffId]) {
+          chatLenMap[senderStaffId] = 0;
+        }
+        chatHistoryMap[senderStaffId].push({ role: 'user', content });
+        const data = getParams(chatHistoryMap[senderStaffId], senderStaffId);
+        const connect = await getConnect();
+        connect.send(JSON.stringify(data));
+        let fullAnswer = "";
+        connect.on('message', async (val) => {
+          val = val.toString('utf-8');
+          const data = JSON.parse(val);
+          const payload = data.payload;
+          const choices = payload.choices;
+          const status = choices.status;
+          const text = choices.text;
+          if (status !== 2) {
+            fullAnswer += text[0].content;
+            if (fullAnswer.length > (200 + chatLenMap[senderStaffId])) {
+              body.text.content = fullAnswer.slice(chatLenMap[senderStaffId]);
+              // console.log(body.text.content, 'body.text.content ')
+              chatLenMap[senderStaffId] = fullAnswer.length
+              axios({
+                url: sessionWebhook,
+                method: "POST",
+                responseType: "json",
+                data: body,
+                headers: {
+                  "x-acs-dingtalk-access-token": accessToken,
+                },
+              });
+            }
+          } else {
+            // const total_tokens = payload.usage.text.total_tokens;
+            // console.log('total_tokens:', total_tokens);
+            fullAnswer += text[0].content;
+            body.text.content = fullAnswer.slice(chatLenMap[senderStaffId]);
+            chatHistoryMap[senderStaffId].push({
+              role: 'assistant',
+              content: fullAnswer,
+            });
+            const result = await axios({
+              url: sessionWebhook,
+              method: "POST",
+              responseType: "json",
+              data: body,
+              headers: {
+                "x-acs-dingtalk-access-token": accessToken,
+              },
+            });
+            chatLenMap[senderStaffId] = 0;
+          }
+        });
+        // 保持聊天历史为最新的30条消息
+        if (chatHistoryMap[senderStaffId].length > 30) {
+          chatHistoryMap[senderStaffId] = chatHistoryMap[senderStaffId].slice(-30);
+        }
+      } catch (error) {
+        console.log(error, 'error-spark')
+      }
     }
+    client.send(messageId, EventAck.SUCCESS);
   })
   client.registerAllEventListener(onEventReceived)
   client.registerCallbackListener(TOPIC_CARD, async (event) => {
