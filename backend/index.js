@@ -25,9 +25,9 @@ app.listen(port, () => {
 
 const test = async () => {
   try {
-    const sessionWebhook = "https://oapi.dingtalk.com/robot/send?access_token=45fafdd4c8fadc8e010b1dddc91c80df1dcd81e67ec4d15aecec5da5ee6d51fb"
+    const sessionWebhook = "https://oapi.dingtalk.com/robot/send?access_token=xxxxxb"
     const accessToken = await getToken();
-    const userId = ["02396524522436637117"]
+    const userId = ["xxxxx"]
     const body = {
       at: {
         atUserIds: userId,
